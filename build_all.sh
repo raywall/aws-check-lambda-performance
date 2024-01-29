@@ -1,51 +1,30 @@
-#!/bin/bash
-
-# Parar em caso de erro
+#!/bin/sh
 set -e
 
-# Compilar Go
-echo "Compilando Go project..."
-cd golang
-go build -o bootstrap
-cd ..
+#build Rust
+cd ./rust-aws-lambda
+sh build.sh
+cd ./../
+##
+#build Go
+cd ./dotnet-lambda
+sh build.sh
+cd ./../
 
-# Compilar Java (assumindo uso do Maven)
-echo "Compilando Java project..."
-cd java
-mvn clean install
-cd ..
+#build Go
+cd ./go-lambda
+sh build.sh
+cd ./../
+#
+#builds Java and GraalVM
+cd ./java-graalvm-lambda
+sh build.sh
+cd ./../
 
-# Compilar .NET
-echo "Compilando .NET project..."
-cd dotnet
-dotnet build
-cd ..
+## Deploy lambdas
 
-# Para Python, Ruby, e Node.js, geralmente não há um processo de 'compilação',
-# mas você pode querer configurar ambientes, instalar dependências, etc.
+alias sam='sam.cmd'
+sam build --use-container NodeJsFunction -b nodejs
+sam build --use-container RubyFunction -b ruby
 
-# Instalar dependências Python
-echo "Configurando Python project..."
-cd python
-pip3 install -r requirements.txt
-cd ..
-
-# Instalar dependências Ruby
-echo "Configurando Ruby project..."
-cd ruby
-bundle install
-cd ..
-
-# Instalar dependências Node.js
-echo "Configurando Node.js project..."
-cd nodejs
-npm install
-cd ..
-
-# Compilar Rust
-echo "Compilando Rust project..."
-cd rust
-cargo build --release
-cd ..
-
-echo "Todos os projetos foram compilados/configurados com sucesso!"
+sam deploy -t template.yaml --no-confirm-changeset --no-fail-on-empty-changeset --stack-name lambda-runtimes-performance --s3-bucket aws-lambda-runtime-performance-test --capabilities CAPABILITY_IAM
