@@ -2,28 +2,28 @@
 set -e
 
 #build Rust
-cd ./rust-aws-lambda
+cd rust
 sh build.sh
-cd ./../
-##
-#build Go
-cd ./dotnet-lambda
+cd ..
+
+#build .net
+cd dotnet
 sh build.sh
-cd ./../
+cd ..
 
 #build Go
-cd ./go-lambda
+cd golang
 sh build.sh
-cd ./../
-#
+cd ..
+
 #builds Java and GraalVM
-cd ./java-graalvm-lambda
+cd java
 sh build.sh
-cd ./../
+cd ..
 
 ## Deploy lambdas
-
 alias sam='sam.cmd'
+
 sam build --use-container NodeJsFunction -b nodejs
 sam build --use-container RubyFunction -b ruby
 

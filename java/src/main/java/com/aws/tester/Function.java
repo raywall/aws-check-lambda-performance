@@ -11,7 +11,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PrimeFunction implements RequestHandler<Object, String> {
+public class Function implements RequestHandler<Object, String> {
     private static final Instant coldStart = Instant.now();
 
     public String handleRequest(Object input, Context context) {
@@ -20,12 +20,12 @@ public class PrimeFunction implements RequestHandler<Object, String> {
         String bucketName = System.getenv("BUCKET_NAME");
         Instant startTime = Instant.now();
         
-        isPrime(N)
+        isPrime(N);
         Instant endTime = Instant.now();
 
         Map<String, Object> result = new HashMap<>();
         result.put("language", "Java");
-        result.put("cold_started_at", coldStart.toString())
+        result.put("cold_started_at", coldStart.toString());
         result.put("warm_started_at", startTime.toString());
         result.put("finished_at", endTime.toString());
         result.put("cold_elapsed_time", java.time.Duration.between(coldStart, endTime).toString());

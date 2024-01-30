@@ -1,21 +1,21 @@
-# Dockerfile
-FROM public.ecr.aws/lambda/provided:al2 as build
+FROM golang:1.21.5
 
-# install compiler
-RUN yum install -y golang
-RUN go env -w GOPROXY=direct
+WORKDIR /go/src/app
+COPY . .
 
-# cache dependencies
-ADD go.mod go.sum ./
-RUN go mod download
+#RUN go get -d -v ./...
+#RUN go install -v ./...
+RUN cat /etc/os-release
 
-# build
-ADD . .
+RUN GOARCH=arm64 GOOS=linux go build -tags lambda.norpc -o golang
 
-RUN GOARCH=arm64 go build -o /main
+RUN apt-get update
+RUN apt install zip -y
 
-# copy artifacts to a clean image
-FROM public.ecr.aws/lambda/provided:al2
-COPY --from=build /main /main
+ADD bootstrap bootstrap
 
-ENTRYPOINT [ "/main" ]
+RUN chmod +x bootstrap
+RUN chmod +x ./golang
+
+RUN zip -j function.zip bootstrap golang
+CMD ["golang"]

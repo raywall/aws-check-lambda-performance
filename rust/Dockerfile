@@ -6,23 +6,24 @@ COPY ./ ./
 RUN rustup target add x86_64-unknown-linux-musl
 RUN apt-get update
 
-RUN apt-get install musl-tools -y
+RUN apt-get install musl-tools rustc -y
 
 RUN apt-get -y install pkg-config libssl-dev
+
 # Build your program for release
 ENV PKG_CONFIG_ALLOW_CROSS 1
 RUN cargo build --release --target x86_64-unknown-linux-musl
-RUN cp target/x86_64-unknown-linux-musl/release/rust-aws-lambda ./app
+RUN cp target/x86_64-unknown-linux-musl/release/rust ./app
 
 
 RUN apt-get update
-RUN  apt install zip
+RUN apt install zip
 
 RUN chmod +x bootstrap
 RUN chmod +x app
 RUN #chmod +x ./app
 RUN zip -j function.zip bootstrap app
 
-RUN cp target/aarch64-unknown-linux-gnu/release/rust-aws-lambda ./app
+RUN cp target/aarch64-unknown-linux-gnu/release/rust ./app
 RUN mkdir "arm"
 RUN zip -j arm/function.zip bootstrap app

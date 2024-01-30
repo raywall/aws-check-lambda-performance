@@ -1,11 +1,10 @@
 {
-    "name": "node-lambda",
+    "name": "nodejs",
     "version": "1.0.0",
     "description": "",
-    "author": "Aleksandr FIlichkin",
+    "author": "Raywall Malheiros",
     "license": "MIT",
     "dependencies": {
-      "uuid": "^2.0.3"
+        "aws-sdk": "^2.1546.0"
     }
-  }
-  
+}
